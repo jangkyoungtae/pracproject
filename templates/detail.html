@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -67,28 +69,70 @@
         .mybtns {
             margin: 15px 0 0 0;
         }
+       .mycards {
+            width: 95%;
+            max-width: 700px;
+            margin: 0px auto 50px auto;
+
+        }
+
+        .mycards > .card {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
     <script>
         $(document).ready(function () {
             console.log($('#title').text());
+            get_comment();
         });
 
         function get_comment() {
+            let cafes = $('#title').text();
             $.ajax({
                 type: "GET",
                 url: "/comment_list",
-                data: {},
+                data: {cafe:cafes},
                 success: function (response) {
+                    console.log(response['cafe_list']);
+                    let cafe_list = response['cafe_list']
+                    for (let i = 0; i < cafe_list.length; i++) {
+                        let nickname = cafe_list[i]['nickname'];
+                        let comment = cafe_list[i]['comment'];
+                        let temp_html = `<div class="card">
+                                            <div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p style="padding: 10px">${comment}</p>
+                                                    <footer class="blockquote-footer">${nickname}</footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`;
+                        $('#comment-list').append(temp_html);
 
+                    }
                 }
-            })
+            });
         }
 
         function post_comment() {
+            let cafes = $('#title').text();
+            let nicknames = $('#nickname').val();
+            let comments = $('#comment').val();
             $.ajax({
                 type: "POST",
                 url: "/post_comment",
-                data: {cafe: "카몽", nickname: "장경태", comment: "댓글"},
+                data: {cafe: cafes, nickname: nicknames, comment: comments},
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            });
+        }
+        function get_detail(){
+            $.ajax({
+                type: "GET",
+                url: "/detail_info",
+                data: {},
                 success: function (response) {
 
                 }
@@ -105,20 +149,21 @@
         <div class="detail">
             <h4>상세정보</h4>
         </div>
-        <div>
-            <div class="mypost">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">닉네임</label>
-                </div>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                    <label for="floatingTextarea">리뷰를 남겨주세요.</label>
-                </div>
-                <div class="mybtns">
-                    <button type="button" class="btn btn-dark">댓글남기기</button>
-                </div>
+        <div class="mypost">
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="nickname" placeholder="name@example.com">
+                <label for="nickname">닉네임</label>
             </div>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="comment"></textarea>
+                <label for="comment">리뷰를 남겨주세요.</label>
+            </div>
+            <div class="mybtns">
+                <button type="button" class="btn btn-dark" onclick="post_comment()">댓글남기기</button>
+            </div>
+        </div>
+        <div class="mycards" id="comment-list">
+
         </div>
     </div>
 </body>
