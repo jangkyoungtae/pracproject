@@ -25,5 +25,12 @@ def detail():
     print(data)
     return render_template('detail.html', data=data)
 
+def post_comment():
+    cafe = request.form['cafe']
+    nickname = request.form['nickname']
+    comment = request.form['comment']
+    doc = {'cafe': cafe, 'nickname': nickname, 'comment': comment}
+    db.users.insert_one(doc)
+    return jsonify({'msg':"댓글 작성 완료"})
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
