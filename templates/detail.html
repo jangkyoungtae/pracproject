@@ -59,10 +59,9 @@
         }
         .mypost {
             width: 500px;
-            margin: 20px auto 0 auto;
+            margin: 20px auto 20px auto;
             box-shadow: 0px 0px 3px 0px gray;
             padding: 20px;
-            margin-bottom: 20px;
             border-radius:5px;
         }
         .mybtns {
@@ -72,7 +71,6 @@
     <script>
         $(document).ready(function () {
             console.log($('#title').text());
-            post_comment();
         });
 
         function get_comment() {
@@ -105,13 +103,14 @@
             <H1 id="title">{{data.cafe}}</H1>
         </div>
         <div class="detail">
-<<<<<<< HEAD
-            <h4>
-                상세정보
-            </h4>
+            <h4>상세정보</h4>
         </div>
         <div>
             <div class="mypost">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">닉네임</label>
+                </div>
                 <div class="form-floating">
                     <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                     <label for="floatingTextarea">리뷰를 남겨주세요.</label>
@@ -120,9 +119,6 @@
                     <button type="button" class="btn btn-dark">댓글남기기</button>
                 </div>
             </div>
-=======
-            <h4>상세정보</h4>
->>>>>>> 77927e40d62cf8ab6b27937f57ceda3e51a74ea5
         </div>
     </div>
 </body>
