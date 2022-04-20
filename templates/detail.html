@@ -22,8 +22,16 @@
             align-items: center;
             justify-content: center;
         }
-        .mypic {
+        .contents{
+            background-color: #ffffff;
             width: 60%;
+              display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .mypic {
+            width: 90%;
             height: 300px;
             background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url({{data.image}});
             background-position: center 50%;
@@ -35,6 +43,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+        }
+        .detail{
+            width: 90%;
+            float: left;
+            display: flex;
+            align-items: flex-start;
+            padding: 30px;
+            border: #cccccc 3px solid;
         }
     </style>
     <script>
@@ -66,11 +82,16 @@
 </head>
 
 <body>
-    <div>
+    <div class="contents">
         <div class="mypic">
             <H1 id="title">{{data.cafe}}</H1>
         </div>
         <div class="detail">
+            <h4>
+                상세정보
+            </h4>
+        </div>
+        <div>
 
         </div>
     </div>
