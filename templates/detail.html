@@ -51,6 +51,18 @@
             align-items: flex-start;
             padding: 30px;
             border: #cccccc 3px solid;
+            border-radius: 5px;
+        }
+        .mypost {
+            width: 500px;
+            margin: 20px auto 0 auto;
+            box-shadow: 0px 0px 3px 0px gray;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius:5px;
+        }
+        .mybtns {
+            margin: 15px 0 0 0;
         }
     </style>
     <script>
@@ -92,7 +104,15 @@
             </h4>
         </div>
         <div>
-
+            <div class="mypost">
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                    <label for="floatingTextarea">리뷰를 남겨주세요.</label>
+                </div>
+                <div class="mybtns">
+                    <button type="button" class="btn btn-dark">댓글남기기</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
