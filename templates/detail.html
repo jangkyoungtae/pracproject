@@ -59,17 +59,20 @@
             border: #cccccc 3px solid;
             border-radius: 5px;
         }
+
         .mypost {
             width: 500px;
             margin: 20px auto 20px auto;
             box-shadow: 0px 0px 3px 0px gray;
             padding: 20px;
-            border-radius:5px;
+            border-radius: 5px;
         }
+
         .mybtns {
             margin: 15px 0 0 0;
         }
-       .mycards {
+
+        .mycards {
             width: 95%;
             max-width: 700px;
             margin: 0px auto 50px auto;
@@ -80,11 +83,39 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+
+        .detail {
+            flex-direction: column;
+        }
+        .detail_content  {
+            width: 100%;
+            margin-left: 30px;
+            padding-right: 30px;
+        }
+
+        .detail_content > p {
+            text-indent: 30px;
+            color: gray;
+        }
+        .detail_content > a >span {
+            margin-left: 30px;
+        }
+        .spinner-border{
+        }
+        .loading{
+            height: 200px;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
     <script>
         $(document).ready(function () {
             console.log($('#title').text());
             get_comment();
+            get_detail();
         });
 
         function get_comment() {
@@ -92,7 +123,7 @@
             $.ajax({
                 type: "GET",
                 url: "/comment_list",
-                data: {cafe:cafes},
+                data: {cafe: cafes},
                 success: function (response) {
                     console.log(response['cafe_list']);
                     let cafe_list = response['cafe_list']
@@ -128,13 +159,31 @@
                 }
             });
         }
-        function get_detail(){
+
+        function get_detail() {
+            let cafes = $('#title').text();
+            let cafe_code = $('#cafe_code').val();
+            $('.loading').css('display','flex');
+            console.log(cafe_code);
             $.ajax({
                 type: "GET",
-                url: "/detail_info",
+                url: "/detail_info?cafe=" + cafes + "&code=" + cafe_code,
                 data: {},
                 success: function (response) {
-
+                    let address = response['address'].replaceAll('\n', ' ').replaceAll('  ', '')
+                    let time = response['time']
+                    let homepage = response['homepage']
+                    let tell = response['tell']
+                    let temp_html = `<h5>주소</h5>
+                                    <p>${address}</p>
+                                    <h5>영업시간</h5>
+                                    <p>${time}</p>
+                                    <h5>홈페이지</h5>
+                                    <a href=${homepage}><span>${homepage}</span></a>
+                                    <h5>전화번호</h5>
+                                    <p>${tell}</p>`;
+                    $('#detail_contents').append(temp_html);
+                    $('.loading').css('display','none');
                 }
             })
         }
@@ -142,29 +191,37 @@
 </head>
 
 <body>
-    <div class="contents">
-        <div class="mypic">
-            <H1 id="title">{{data.cafe}}</H1>
-        </div>
-        <div class="detail">
-            <h4>상세정보</h4>
-        </div>
-        <div class="mypost">
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="nickname" placeholder="name@example.com">
-                <label for="nickname">닉네임</label>
+<div class="contents">
+    <div class="mypic">
+        <H1 id="title">{{data.cafe}}</H1>
+        <input id="cafe_code" type="hidden" value="24786161">
+    </div>
+    <div class="detail">
+        <h4>상세정보</h4>
+        </br>
+        <div class="detail_content" id="detail_contents">
+            <div class="loading">
+                <div class="spinner-border text-info" role="status">
+                </div>
             </div>
-            <div class="form-floating">
-                <textarea class="form-control" placeholder="Leave a comment here" id="comment"></textarea>
-                <label for="comment">리뷰를 남겨주세요.</label>
-            </div>
-            <div class="mybtns">
-                <button type="button" class="btn btn-dark" onclick="post_comment()">댓글남기기</button>
-            </div>
-        </div>
-        <div class="mycards" id="comment-list">
-
         </div>
     </div>
+    <div class="mypost">
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="nickname" placeholder="name@example.com">
+            <label for="nickname">닉네임</label>
+        </div>
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="comment"></textarea>
+            <label for="comment">리뷰를 남겨주세요.</label>
+        </div>
+        <div class="mybtns">
+            <button type="button" class="btn btn-dark" onclick="post_comment()">댓글남기기</button>
+        </div>
+    </div>
+    <div class="mycards" id="comment-list">
+
+    </div>
+</div>
 </body>
 </html>
