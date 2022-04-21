@@ -20,6 +20,29 @@
         *{
             font-family: 'Nanum Pen Script', cursive;
         }
+
+        .loading {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            position:fixed;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-50%);
+            z-index: 1000;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%,-50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%,-50%) rotate(360deg);
+            }
+        }
         .title {
             width: 100%;
             height: 300px;
@@ -78,12 +101,23 @@
 
     <script>
         $(document).ready(function () {
-            info();
+            // $('.loading').delay('6000').fadeOut();
             show_comment();
+            let code = $('#cafeUrl').val().split('/')[3]
+            if (window.localStorage.getItem('code')==code){
+                infoStorage()
+            }
+            else{
+                info();
+            }
         });
 
         function info() {
             let cafeUrl = $('#cafeUrl').val()
+            $('body').css('display','none')
+            setTimeout(function (){
+                $('body').css('display','block')
+            },5500)
             $.ajax({
                 type: "GET",
                 url: "/info",
@@ -93,6 +127,7 @@
                     let time = response['time']
                     let url = response['url']
                     let phoneNumber = response['phoneNumber']
+                    let code = cafeUrl.split('/')[3]
 
                     let temp_html = `<h5>주소</h5>
                                         <p>${add}</p>
@@ -102,10 +137,34 @@
                                         <a href=${url}><span>${url}</span></a>
                                         <h5>전화번호</h5>
                                         <p>${phoneNumber}</p>`
+                    window.localStorage.setItem('add', add)
+                    window.localStorage.setItem('time', time)
+                    window.localStorage.setItem('url', url)
+                    window.localStorage.setItem('phoneNumber', phoneNumber)
+                    window.localStorage.setItem('code',code)
                     $('.infoList').append(temp_html)
                 }
             })
         }
+
+        function infoStorage() {
+            let add = window.localStorage.getItem('add')
+            let time = window.localStorage.getItem('time')
+            let url = window.localStorage.getItem('url')
+            let phoneNumber = window.localStorage.getItem('phoneNumber')
+
+            let temp_html = `<h5>주소</h5>
+                                        <p>${add}</p>
+                                        <h5>영업 시간</h5>
+                                        <p>${time}</p>
+                                        <h5>홈페이지</h5>
+                                        <a href=${url}><span>${url}</span></a>
+                                        <h5>전화번호</h5>
+                                        <p>${phoneNumber}</p>`
+
+            $('.infoList').append(temp_html)
+        }
+
 
         function save_comment() {
             let name = $('#name').val()
@@ -151,6 +210,7 @@
     </script>
 </head>
 <body>
+<!--<div class="loading"></div>-->
 <div class = title id ="title">{{data.title}}</div>
 <input id = "cafeUrl" type="hidden" value={{data.cafeUrl}}>
 <!--<input id = "cafeCode" type="hidden" value={{data.cafeCode}}>-->
