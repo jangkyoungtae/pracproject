@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>CAFE SEARCH</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+          font-family: "Nanum Pen Script", cursive;
+          box-sizing: border-box;
+        }
+        .search-form {
+          width: 100%;
+          height: 250px;
+
+          background-image: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.5),
+              rgba(0, 0, 0, 0.5)
+            ),
+            url("/static/cafe.jpg");
+          background-position: center;
+          background-size: cover;
+
+          color: black;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          font-size: xx-large;
+        }
+        .form-control {
+          position: relative;
+          width: 400px;
+          top: 10px;
+        }
+        #search {
+          font-size: xx-large;
+        }
+
+        .search-form > button {
+          position: relative;
+          margin: 0 20px;
+          width: 80px;
+          height: 40px;
+          top: 3px;
+          cursor: pointer;
+        }
+        .list {
+          /* position: relative;
+            margin-top: 10px;
+            padding-left: 70px; */
+
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: space-around;
+          align-items: center;
+        }
+        .card {
+          /* margin: 10px 0px;
+            padding: 10px; */
+          width: 300px;
+          height: 360px;
+          border-radius: 15px;
+          padding: 1.5rem;
+          margin: 50px 50px;
+          background: white;
+          position: relative;
+          display: flex;
+          align-items: flex-end;
+          transition: 0.4s ease-out;
+          box-shadow: 0px 7px 10px rgba(0, 0, 0, 0.5);
+        }
+        .card:hover {
+          transform: translateY(20px);
+        }
+        .card:hover:before {
+          opacity: 1;
+        }
+        .card:hover .info {
+          opacity: 1;
+          transform: translateY(0px);
+        }
+        .card:before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 15px;
+          background: rgba(0, 0, 0, 0.6);
+          z-index: 2;
+          transition: 0.5s;
+          opacity: 0;
+        }
+        .card > img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-radius: 15px;
+        }
+        .info {
+          position: absolute;
+          left: 20px;
+          top: 70px;
+          z-index: 3;
+          color: white;
+          opacity: 0;
+          transform: translateY(30px);
+          transition: 0.5s;
+        }
+        .info > h1 {
+          margin-bottom: 10px;
+        }
+        .info > p {
+          letter-spacing: 1px;
+          font-size: 15px;
+          margin-top: 8px;
+        }
+
+        #morebtn {
+          position: absolute;
+          left: 50%;
+          display: none;
+        }
+        #comment > button {
+          margin-top: 20px;
+          margin-left: 210px;
+          margin-bottom: 20px;
+        }
+
+    </style>
+
+    <script>
+                    // $(document).ready(function () {
+            //     // limit = 8
+            //     // init = 0
+            // });
+            function searching() {
+              limit = 8;
+              init = 0;
+              $("#list").empty();
+              listing(limit, init);
+            }
+
+            function listing(limitLength, initLength) {
+              let search = $("#search").val();
+              $.ajax({
+                type: "GET",
+                url: "/cafe",
+                data: { search_give: search },
+                success: function (response) {
+                  let rows = response["cafelist"];
+                  if (limitLength < rows.length) {
+                    for (let i = initLength; i < limitLength; i++) {
+                      let name = rows[i]["name"];
+                      let add = rows[i]["add"];
+                      let add_more = rows[i]["add_more"];
+                      let star = rows[i]["star"];
+                      let url = rows[i]["url"];
+                      let num = rows[i]["num"];
+                      let image = rows[i]["image"];
+                      let temp_html = `<div class="card"><img src="http://${image}"/>
+                                                        <div class="info">
+                                                        <h1>${name}</h1>
+                                                        <h5>${add}</h5>
+                                                        <p>${add_more}</p>
+                                                        <p>⭐ &nbsp; ${star}</p>
+                                                        <form action="/comment" method="post">
+                                                            <input type ="hidden" name = "title" id="title" value="${name}"/>
+                                                            <input type ="hidden" name = "image" id="title" value="http://${image}"/>
+                                                            <input type ="hidden" name = "cafeUrl" id="cafeUrl" value="${url}"/>
+                                                            <input type ="submit" value="상세보기"/>
+                                                        </form>
+                                                        </div>
+                                                </div>`;
+
+                      // let temp_html = ` <div class="col-lg-3 col-md-6">
+                      //                         <div class="card" style="width: 20rem;">
+                      //                             <img src="http://${image}" class="card-img-top" alt="">
+                      //                             <div class="card-body">
+                      //                                 <h5 class="card-title">${name}</h5>
+                      //                                 <h6 class="card-text">${add}</h6>
+                      //                                 <p class="card-subtitle mb-2 text-muted">${add_more}</p>
+                      //                                 <p> ⭐ &nbsp; ${star} </p>
+                      //                                 <a href="${url}" class="btn btn-primary">상세 보기</a>
+                      //                             </div>
+                      //                         </div>
+                      //                     </div>`
+
+                      $("#list").append(temp_html);
+                      $("#morebtn").show();
+                    }
+                  } else {
+                    for (let i = initLength; i < rows.length; i++) {
+                      let name = rows[i]["name"];
+                      let add = rows[i]["add"];
+                      let add_more = rows[i]["add_more"];
+                      let star = rows[i]["star"];
+                      let url = rows[i]["url"];
+                      let num = rows[i]["num"];
+                      let image = rows[i]["image"];
+                      let temp_html = `<div class="card"><img id = "image" src="http://${image}"/>
+                                                        <div class="info" >
+                                                        <h1>${name}</h1>
+                                                        <h5>${add}</h5>
+                                                        <p>${add_more}</p>
+                                                        <p>⭐ &nbsp; ${star}</p>
+                                                         <form action="/comment" method="post">
+                                                            <input type ="hidden" name = "title" id="title" value="${name}"/>
+                                                            <input type ="hidden" name = "image" id="title" value="http://${image}"/>
+                                                            <input type ="hidden" name = "cafeUrl" id="cafeUrl" value="${url}"/>
+                                                            <input type ="submit" value="상세보기"/>
+                                                        </form>
+                                                        </div>
+                                                </div>`;
+                      // let temp_html = ` <div class="col-lg-3 col-md-6">
+                      //                         <div class="card" style="width: 20rem;">
+                      //                             <img src="http://${image}" class="card-img-top" alt="">
+                      //                             <div class="card-body">
+                      //                                 <h5 class="card-title">${name}</h5>
+                      //                                 <h6 class="card-text">${add}</h6>
+                      //                                 <p class="card-subtitle mb-2 text-muted">${add_more}</p>
+                      //                                 <p> ⭐ &nbsp; ${star} </p>
+                      //                                 <a href="${url}" class="btn btn-primary">상세 보기</a>
+                      //                             </div>
+                      //                         </div>
+                      //                     </div>`
+
+                      $("#list").append(temp_html);
+                      $("#morebtn").hide();
+                    }
+                  }
+                },
+              });
+            }
+            function moreListing() {
+              listing((limit += 8), (init += 8));
+            }
+
+            // let MYAPPKEY='ba9e62313cff887ee558076347f418a9'
+            // function comment(num) {
+            //   let a = String(num); //문자열로 변환해주는것
+            //   let comment = $("#floatingTextarea2" + a).val();
+            //   if (comment == "") {
+            //     alert("댓글을 입력하세요!");
+            //   } else {
+            //     let temp_html = `<li>${comment}</li>`;
+            //     $(".card-body" + a).append(temp_html);
+            //   }
+            // }
+
+
+
+
+
+    </script>
+</head>
+
+<body>
+<div class = search-form>
+    <div class="form-floating mb-3">
+        <input type="text" onkeypress="if(window.event.keyCode==13){searching()}" class="form-control" id="search" placeholder="검색하세요">
+        <label for="search">검색하세요</label>
+    </div>
+    <button onclick="searching()" type="button" class="btn btn-dark" id="btn">검색</button>
+</div>
+<div class="list" id="list">
+<!--    <div class="row" id="row">-->
+<!--        <div class="col">-->
+<!--            <div class="card" style="width: 18rem;">-->
+<!--                <img src="..." class="card-img-top" alt="...">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title">Card title</h5>-->
+<!--                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the-->
+<!--                        card's content.</p>-->
+<!--                    <a href="#" class="btn btn-primary">Go somewhere</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+    </div>
+<!--<div class="card" style="width: 18rem; padding-bottom: 10px;">-->
+<!--  <div class="card-body">-->
+<!--      <h5 class="card-title">카페 이름</h5>-->
+<!--      <h6 class="card-text">카페 주소</h6>-->
+<!--      <p class="card-subtitle mb-2 text-muted">지번명</p>-->
+<!--      <a href="#" class="card-link">카페 링크</a>-->
+<!--      <div class="form-floating" id="comment">-->
+<!--        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px;width:15.8rem"></textarea>-->
+<!--          <label for="floatingTextarea2">댓글</label>-->
+<!--          <button onclick="comment()" type="button" class="btn btn-outline-dark">등록</button>-->
+<!--      </div>-->
+<!--  </div>-->
+<!--</div>-->
+</div>
+<button onclick="moreListing()" type="button" class="btn btn-outline-dark" id="morebtn">더 보기</button>
+<!--카카오 맵 코드-->
+<!--<div id="map" style="width:500px;height:400px;"></div>-->
+<!--	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ba9e62313cff887ee558076347f418a9&livraries=services,clusterer,drawing"></script>-->
+<!--	<script>-->
+<!--		var container = document.getElementById('map');-->
+<!--		var options = {-->
+<!--			center: new kakao.maps.LatLng(33.450701, 126.570667),-->
+<!--			level: 3-->
+<!--		};-->
+
+<!--		var map = new kakao.maps.Map(container, options);-->
+<!--	</script>-->
+
+</body>
+</html>
