@@ -115,7 +115,12 @@
         $(document).ready(function () {
             console.log($('#title').text());
             get_comment();
-            get_detail();
+            if (Number(window.localStorage.getItem('code')) !== {{data.code}}){
+                get_detail();
+            }else {
+                get_detail2();
+            }
+
         });
 
         function get_comment() {
@@ -159,12 +164,27 @@
                 }
             });
         }
-
+        function get_detail2() {
+            $('.loading').css('display','flex');
+            let address = window.localStorage.getItem('address')
+            let time = window.localStorage.getItem('time')
+            let homepage=window.localStorage.getItem('homepage')
+            let tell=window.localStorage.getItem('tell')
+            let temp_html = `<h5>주소</h5>
+                            <p>${address}</p>
+                            <h5>영업시간</h5>
+                            <p>${time}</p>
+                            <h5>홈페이지</h5>
+                            <a href=${homepage}><span>${homepage}</span></a>
+                            <h5>전화번호</h5>
+                            <p>${tell}</p>`;
+            $('#detail_contents').append(temp_html);
+            $('.loading').css('display','none');
+        }
         function get_detail() {
             let cafes = $('#title').text();
             let cafe_code = $('#cafe_code').val();
             $('.loading').css('display','flex');
-            console.log(cafe_code);
             $.ajax({
                 type: "GET",
                 url: "/detail_info?cafe=" + cafes + "&code=" + cafe_code,
@@ -174,6 +194,11 @@
                     let time = response['time']
                     let homepage = response['homepage']
                     let tell = response['tell']
+                    window.localStorage.setItem('code',{{data.code}})
+                    window.localStorage.setItem('address',address)
+                    window.localStorage.setItem('time',time)
+                    window.localStorage.setItem('homepage',homepage)
+                    window.localStorage.setItem('tell',tell)
                     let temp_html = `<h5>주소</h5>
                                     <p>${address}</p>
                                     <h5>영업시간</h5>
@@ -194,7 +219,7 @@
 <div class="contents">
     <div class="mypic">
         <H1 id="title">{{data.cafe}}</H1>
-        <input id="cafe_code" type="hidden" value="24786161">
+        <input id="cafe_code" type="hidden" value={{data.code}}>
     </div>
     <div class="detail">
         <h4>상세정보</h4>

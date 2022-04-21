@@ -32,9 +32,11 @@ def home():
 def detail():
     cafe = request.form['cafe']
     image = request.form['image']
+    code = request.form['code']
     data = {
         'cafe':cafe,
-        'image':image
+        'image':image,
+        'code':code
     }
     print(data)
     return render_template('detail.html', data=data)
