@@ -96,12 +96,18 @@
             box-shadow: 0px 0px 3px 0px gray;
 
         }
+        .card-body > button{
+            position:relative;
+            float:right;
+            margin: 5px;
+        }
 
     </style>
 
     <script>
         $(document).ready(function () {
-            // $('.loading').delay('6000').fadeOut();
+            let title = $('#title').text()
+            window.localStorage.setItem('title', title)
             show_comment();
             let code = $('#cafeUrl').val().split('/')[3]
             if (window.localStorage.getItem('code')==code){
@@ -192,17 +198,74 @@
                     for (let i = 0; i < rows.length; i++) {
                         let name = rows[i]['name']
                         let comment = rows[i]['comment']
+                        let num = rows[i]['num']
                         let temp_html = `<div class="card">
                                             <div class="card-body">
                                                 <blockquote class="blockquote mb-0">
                                                     <p>${comment}</p>
                                                     <footer class="blockquote-footer">${name}</footer>
                                                 </blockquote>
+                                                <button onclick="cancel_comment(${num})" type="button" class="btn btn-danger">삭제</button>
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop${num}">
+                                                  수정
+                                                 </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="staticBackdrop${num}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                  <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">수정하기</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        <div class="form-floating">
+                                                            <textarea class="form-control" placeholder="Leave a comment here" id="updateComment${num}"
+                                                                      style="height: 100px"></textarea>
+                                                            <label for="comment">리뷰</label>
+                                                        </div>
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                        <button onclick= "update_comment(${num})" type="button" class="btn btn-primary">수정</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
                                             </div>
                                         </div>`
 
+
                         $('.comment_list').append(temp_html)
                     }
+                }
+            });
+        }
+        function cancel_comment(num) {
+            let title = $('#title').text()
+            $.ajax({
+                type: "POST",
+                url: "/comment_list/cancel",
+                data: {title_give: title, num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+        function update_comment(num) {
+            let title = $('#title').text()
+            let comment = $('#updateComment'+num).val()
+            console.log(num,comment)
+            $.ajax({
+                type: "POST",
+                url: "/comment_list/update",
+                data: {title_give: title, comment_give:comment, num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
                 }
             });
         }

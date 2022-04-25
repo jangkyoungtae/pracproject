@@ -84,15 +84,34 @@ def comment_post():
     name_receive = request.form['name_give']
     comment_receive = request.form['comment_give']
     title_receive = request.form['title_give']
+    commentList = list(db.comments.find({'title': {'$regex': title_receive}}, {'_id': False}))
+    count = len(commentList) + 1
 
     doc = {
         'name': name_receive,
         'comment': comment_receive,
-        'title':title_receive
+        'title':title_receive,
+        'num':count,
+
     }
     db.comments.insert_one(doc)
     return jsonify({'msg': '등록 완료!'})
 
+@app.route("/comment_list/update", methods=["POST"])
+def comment_update():
+    title_receive = request.form['title_give']
+    num_receive = request.form['num_give']
+    comment_receive = request.form['comment_give']
+    print(comment_receive,num_receive)
+    db.comments.update_one({'title': {'$regex': str(title_receive)}, 'num': int(num_receive)}, {'$set': {'comment': comment_receive}})
+    return jsonify({'msg': '수정 완료!'})
+
+@app.route("/comment_list/cancel", methods=["POST"])
+def comment_cancel():
+    title_receive = request.form['title_give']
+    num_receive = request.form['num_give']
+    db.comments.delete_one({'title': {'$regex': str(title_receive)}, 'num': int(num_receive)})
+    return jsonify({'msg': '삭제 완료!'})
 
 @app.route("/comment_list", methods=["GET"])
 def comment_get():
