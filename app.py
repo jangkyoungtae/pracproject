@@ -80,7 +80,7 @@ def info_get():
     return jsonify({'add': add, 'time': time, 'url': url, 'phoneNumber': phoneNumber})
 
 @app.route("/comment_list", methods=["POST"])
-def homework_post():
+def comment_post():
     name_receive = request.form['name_give']
     comment_receive = request.form['comment_give']
     title_receive = request.form['title_give']
@@ -95,7 +95,7 @@ def homework_post():
 
 
 @app.route("/comment_list", methods=["GET"])
-def homework_get():
+def comment_get():
     title_receive = request.args.get('title_give')
     comment_list = list(db.comments.find({'title': {'$regex': str(title_receive)}}, {'_id': False}))
     return jsonify({'comment_list': comment_list})
