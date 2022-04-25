@@ -133,6 +133,12 @@
           font-size: 15px;
           margin-top: 8px;
         }
+        #submit{
+            background-color: #3498db;
+            border-radius: 5px;
+            border:solid 2px black;
+            color: black;
+        }
 
         #morebtn {
           position: absolute;
@@ -184,9 +190,9 @@
                                                         <p>⭐ &nbsp; ${star}</p>
                                                         <form action="/comment" method="post">
                                                             <input type ="hidden" name = "title" id="title" value="${name}"/>
-                                                            <input type ="hidden" name = "image" id="title" value="http://${image}"/>
+                                                            <input type ="hidden" name = "image" id="image" value="http://${image}"/>
                                                             <input type ="hidden" name = "cafeUrl" id="cafeUrl" value="${url}"/>
-                                                            <input type ="submit" value="상세보기"/>
+                                                            <input type ="submit" id="submit" value="상세보기"/>
                                                         </form>
                                                         </div>
                                                 </div>`;
@@ -224,9 +230,9 @@
                                                         <p>⭐ &nbsp; ${star}</p>
                                                          <form action="/comment" method="post">
                                                             <input type ="hidden" name = "title" id="title" value="${name}"/>
-                                                            <input type ="hidden" name = "image" id="title" value="http://${image}"/>
+                                                            <input type ="hidden" name = "image" id="image" value="http://${image}"/>
                                                             <input type ="hidden" name = "cafeUrl" id="cafeUrl" value="${url}"/>
-                                                            <input type ="submit" value="상세보기"/>
+                                                            <input type ="submit" id="submit" value="상세보기"/>
                                                         </form>
                                                         </div>
                                                 </div>`;

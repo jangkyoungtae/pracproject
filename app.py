@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+from selenium.common.exceptions import NoSuchElementException
+
 app = Flask(__name__)
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -32,7 +34,7 @@ def comment():
         'image': image,
         'cafeUrl': cafeUrl
     }
-    print(data)
+
     return render_template('comment.html', data=data)
 
 # @app.route('/searchList')
@@ -57,7 +59,6 @@ def cafe_get():
 @app.route("/info", methods=["GET"])
 def info_get():
     url_receive = request.args.get('url_give')
-    print(url_receive)
     options = webdriver.ChromeOptions()
     options.add_argument("headless")  # 크롬창 안뜨게 해줌!!
     driver = webdriver.Chrome('./chromedriver', chrome_options=options)
@@ -66,11 +67,14 @@ def info_get():
     # image = driver.find_elements_by_css_selector('#mArticle > div.cont_photo > div.photo_area > ul > li > a')[0].get_attribute(
     #     'style').split('"')[1].split(')')[0].lstrip('/')
     # title = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[1]/div[2]/div/h2').text
-    add = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[1]/div/span[1]').text
-    time = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[2]/div/div[1]/ul/li/span').text
-    # //*[@id="mArticle"]/div[1]/div[2]/div[2]/div/div[1]/ul/li/span/span
-    url = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[3]/div/div/a').get_attribute('href')
-    phoneNumber = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[4]/div/div/span/span[1]').text
+    try:
+        add = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[1]/div/span[1]').text
+        time = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[2]/div/div[1]/ul/li/span').text
+        # //*[@id="mArticle"]/div[1]/div[2]/div[2]/div/div[1]/ul/li/span/span
+        url = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[3]/div/div/a').get_attribute('href')
+        phoneNumber = driver.find_element_by_xpath('//*[@id="mArticle"]/div[1]/div[2]/div[4]/div/div/span/span[1]').text
+    except NoSuchElementException:
+        phoneNumber = "없음"
 
     driver.quit()
     return jsonify({'add': add, 'time': time, 'url': url, 'phoneNumber': phoneNumber})
