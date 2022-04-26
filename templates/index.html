@@ -73,6 +73,7 @@
                         let add_more = rows[i]['add_more'];
                         let image = rows[i]['image'];
                         let name = rows[i]['name'];
+                        console.log(name)
                         let num = rows[i]['num'];
                         let star = rows[i]['star'];
                         let url = rows[i]['url'];
@@ -90,7 +91,7 @@
                                             <div style="display: inline-block">
                                             <p class="card-text" style="display: inline-block">⭐${star}</p>
                                             <form action="/detail" method="post" style="display: inline-block">
-                                                <input type="hidden" name="cafe" id="cafe" value=${name} />
+                                                <input type="hidden" name="cafe" id="cafe" value="${name}" />
                                                 <input type="hidden" name="image" id="image" value=https://${image} />
                                                 <input type="hidden" name="code" id="code" value=${cafe_code} />
                                                 <input type="submit" class="btn btn-primary" value="상세보기" />
