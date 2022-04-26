@@ -110,6 +110,22 @@
             align-items: center;
             justify-content: center;
         }
+        #comment-list> div{
+            width: 100%;
+        }
+        #comment-list> div {
+            display: flex;
+             flex-direction: row;
+            align-items: end;
+
+        }
+        .btn_ud > button{
+             display: flex;
+            flex-direction: column;
+            align-items: start;
+            margin: 10px;
+            width: 80%;
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -121,6 +137,7 @@
                 get_detail2();
             }
 
+
         });
 
         function get_comment() {
@@ -130,20 +147,45 @@
                 url: "/comment_list",
                 data: {cafe: cafes},
                 success: function (response) {
-                    console.log(response['cafe_list']);
                     let cafe_list = response['cafe_list']
                     for (let i = 0; i < cafe_list.length; i++) {
                         let nickname = cafe_list[i]['nickname'];
                         let comment = cafe_list[i]['comment'];
-                        let temp_html = `<div class="card">
-                                            <div class="card-body">
+                        let num = cafe_list[i]['num'];
+                        let update_num =window.localStorage.getItem('num')
+                        let temp_html = "";
+                        if (update_num == num){
+                            temp_html = `<div class="card">
+                                            <div class="card-body" style="width: 50%">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p style="padding: 10px"><input type="text" id="update_comment" /></p>
+                                                    <footer class="blockquote-footer"><input id="update_nick" type="text" /></footer>
+                                                </blockquote>
+                                            </div>
+                                            <div class="btn_ud">
+                                                <button type="button" class="btn btn-dark" onclick=comment_update_done(${num})>확인</button>
+                                                <button type="button" class="btn btn-dark" onclick=comment_update_cancle()>취소</button>
+                                            </div>
+                                        </div>`;
+                        }else {
+                            temp_html = `<div class="card">
+                                            <div class="card-body" style="width: 50%">
                                                 <blockquote class="blockquote mb-0">
                                                     <p style="padding: 10px">${comment}</p>
                                                     <footer class="blockquote-footer">${nickname}</footer>
                                                 </blockquote>
                                             </div>
+                                            <div class="btn_ud">
+                                                <button type="button" class="btn btn-dark" onclick=comment_update(${num})>수정</button>
+                                                <button type="button" class="btn btn-dark" onclick=comment_del(${num})> 삭제</button>
+                                            </div>
                                         </div>`;
+                        }
+
                         $('#comment-list').append(temp_html);
+                        $('#update_comment').val(comment);
+                        $('#update_nick').val(nickname);
+
 
                     }
                 }
@@ -181,6 +223,46 @@
             $('#detail_contents').append(temp_html);
             $('.loading').css('display','none');
         }
+
+        function comment_del(num) {
+            $.ajax({
+                type: "POST",
+                url: "/comment_del",
+                data: {num: num},
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            });
+        }
+
+        function comment_update(num) {
+            window.localStorage.setItem('num',num)
+            window.location.reload()
+
+        }
+        function comment_update_cancle() {
+            window.localStorage.setItem('num',0)
+            window.location.reload()
+
+        }
+        function comment_update_done(num) {
+            let nicknames = $('#update_nick').val();
+            let comments = $('#update_comment').val();
+             window.localStorage.setItem('num',0)
+            $.ajax({
+                type: "POST",
+                url: "/comment_update",
+                data: {num: num, nickname: nicknames, comment: comments},
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            });
+
+        }
+
+
         function get_detail() {
             let cafes = $('#title').text();
             let cafe_code = $('#cafe_code').val();
