@@ -33,30 +33,34 @@
           background-position: center;
           background-size: cover;
 
-          color: black;
+          color: white;
           display: flex;
           flex-direction: row;
           justify-content: center;
           align-items: center;
           font-size: xx-large;
         }
-        .form-control {
-          position: relative;
-          width: 400px;
-          top: 10px;
+        .title{
+            position: relative;
+            font-size: xxx-large;
         }
-        #search {
-          font-size: xx-large;
-        }
+        /*.form-control {*/
+        /*  position: relative;*/
+        /*  width: 400px;*/
+        /*  top: 10px;*/
+        /*}*/
+        /*#search {*/
+        /*  font-size: xx-large;*/
+        /*}*/
 
-        .search-form > button {
-          position: relative;
-          margin: 0 20px;
-          width: 80px;
-          height: 40px;
-          top: 3px;
-          cursor: pointer;
-        }
+        /*.search-form > button {*/
+        /*  position: relative;*/
+        /*  margin: 0 20px;*/
+        /*  width: 80px;*/
+        /*  height: 40px;*/
+        /*  top: 3px;*/
+        /*  cursor: pointer;*/
+        /*}*/
         .list {
           /* position: relative;
             margin-top: 10px;
@@ -154,10 +158,11 @@
     </style>
 
     <script>
-                    // $(document).ready(function () {
-            //     // limit = 8
-            //     // init = 0
-            // });
+            $(document).ready(function () {
+                let searchResult = $('#title').text()
+                window.localStorage.setItem('search', searchResult)
+                searching()
+            });
             function searching() {
               limit = 8;
               init = 0;
@@ -166,7 +171,7 @@
             }
 
             function listing(limitLength, initLength) {
-              let search = $("#search").val();
+              let search = localStorage.getItem('search').substring(0,3)
               $.ajax({
                 type: "GET",
                 url: "/cafe",
@@ -282,10 +287,11 @@
 <body>
 <div class = search-form>
     <div class="form-floating mb-3">
-        <input type="text" onkeypress="if(window.event.keyCode==13){searching()}" class="form-control" id="search" placeholder="검색하세요">
-        <label for="search">검색하세요</label>
+        <div class = title id ="title">{{data.search}}카페</div>
+<!--        <input type="text" onkeypress="if(window.event.keyCode==13){searching()}" class="form-control" id="search" placeholder="검색하세요">-->
+<!--        <label for="search">검색하세요</label>-->
     </div>
-    <button onclick="searching()" type="button" class="btn btn-dark" id="btn">검색</button>
+<!--    <button onclick="searching()" type="button" class="btn btn-dark" id="btn">검색</button>-->
 </div>
 <div class="list" id="list">
 <!--    <div class="row" id="row">-->
